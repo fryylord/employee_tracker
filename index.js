@@ -14,7 +14,7 @@ app.use(express.json());
 const connection = mysql.createConnection({
     host: 'localhost',
     user: 'root',
-    password: process.env.KEY,
+    password: process.env.KEYS,
     database: 'employees'
 });
 
@@ -78,3 +78,18 @@ function mainPrompt() {
         });
 }
 
+const viewAllEmployees = () => {
+    let sql =       `SELECT employee.id, 
+                    employee.first_name, 
+                    employee.last_name, 
+                    role.title, 
+                    department.name AS 'department', 
+                    role.salary
+                    FROM employee, role, department 
+                    WHERE department.id = role.department_id 
+                    AND role.id = employee.role_id
+                    ORDER BY employee.id ASC`;
+    connection.query(sql, (error, response) => {
+      if (error) throw error;
+      console.table(response);
+      mainPrompt();})};
