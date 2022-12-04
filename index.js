@@ -1,7 +1,7 @@
 const mysql = require('mysql2');
-// const inquirer = require('inquirer');
-// const init = require('init');
-// require('console.table');
+const inquirer = require('inquirer');
+const init = require('init');
+require('console.table');
 require('dotenv').config();
 
 const connection = mysql.createConnection({
@@ -65,7 +65,7 @@ function mainPrompt() {
                     addDepartment();
                     break;
 
-                case promptMessages.exit:
+                case 'Quit':
                     connection.end();
                     break;
             }
