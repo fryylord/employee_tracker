@@ -1,7 +1,7 @@
-const mysql = require('mysql');
-const inquirer = require('inquirer');
-const init = require('init');
-require('console.table');
+const mysql = require('mysql2');
+// const inquirer = require('inquirer');
+// const init = require('init');
+// require('console.table');
 require('dotenv').config();
 
 const connection = mysql.createConnection({
