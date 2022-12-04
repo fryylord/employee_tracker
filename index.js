@@ -2,6 +2,20 @@ const mysql = require('mysql');
 const inquirer = require('inquirer');
 const init = require('init');
 require('console.table');
+require('dotenv').config();
+
+const connection = mysql.createConnection({
+    host: 'localhost',
+    port: 8001,
+    user: 'process.env.username',
+    password: 'process.env.password',
+    database: 'employees'
+});
+
+connection.connect(err => {
+    if (err) throw err;
+    mainPrompt();
+});
 
 function mainPrompt() {
     inquirer
