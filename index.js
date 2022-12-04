@@ -1,14 +1,20 @@
+require('dotenv').config({ path: "./newInfo.env"});
 const mysql = require('mysql2');
 const inquirer = require('inquirer');
+const express = require('express');
 const init = require('init');
 require('console.table');
-require('dotenv').config();
+
+const PORT = process.env.PORT || 8001;
+const app = express();
+
+app.use(express.urlencoded({ extended: false }));
+app.use(express.json());
 
 const connection = mysql.createConnection({
     host: 'localhost',
-    port: 8001,
-    user: 'process.env.username',
-    password: 'process.env.password',
+    user: 'root',
+    password: process.env.KEY,
     database: 'employees'
 });
 
