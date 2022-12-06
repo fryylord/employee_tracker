@@ -290,3 +290,10 @@ addRole = () => {
    });
  });
 };
+
+const viewAllDepartments = () => {
+  let sql = `SELECT * FROM department`;
+  connection.query(sql, (error, response) => {
+    if (error) throw error;
+    console.table(response);
+    mainPrompt();})};
