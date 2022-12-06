@@ -206,9 +206,6 @@ updateEmployeeRole = () => {
                 let employee = params[0]
                 params[0] = role
                 params[1] = employee 
-                
-
-                // console.log(params)
 
                 const sql = `UPDATE employee SET role_id = ? WHERE id = ?`;
 
