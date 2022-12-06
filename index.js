@@ -32,10 +32,12 @@ function mainPrompt() {
                 'View all employees',
                 'Add employee',
                 'Update employee role',
+                'Update manager for employee',
                 'View all roles',
                 'Add a role',
                 'View all departments',
                 'Add a department',
+                'Delete an employee',
                 'Quit'
             ]
         })
@@ -53,6 +55,10 @@ function mainPrompt() {
                 case 'Update employee role':
                     updateEmployeeRole();
                     break;
+                                
+                case 'Update manager for employee':
+                    updateManager();
+                    break;
 
                 case 'View all roles':
                     viewAllRoles();
@@ -68,6 +74,10 @@ function mainPrompt() {
 
                 case 'Add a department':
                     addDepartment();
+                    break;
+
+                case 'Delete an employee':
+                    deleteEmployee();
                     break;
 
                 case 'Quit':
@@ -314,4 +324,109 @@ const addDepartment = () => {
         viewAllDepartments();
       });
     });
+};
+
+function deleteEmployee() {
+  console.log("Deleting an employee");
+
+  var query =
+    `SELECT e.id, e.first_name, e.last_name
+      FROM employee e`
+
+  connection.query(query, function (err, res) {
+    if (err) throw err;
+
+    const deleteEmployeeChoices = res.map(({ id, first_name, last_name }) => ({
+      value: id, name: `${id} ${first_name} ${last_name}`
+    }));
+
+    console.table(res);
+
+    promptDelete(deleteEmployeeChoices);
+  });
+}
+
+// User choose the employee list, then employee is deleted
+function promptDelete(deleteEmployeeChoices) {
+
+  inquirer
+    .prompt([
+      {
+        type: "list",
+        name: "employeeId",
+        message: "Which employee do you want to remove?",
+        choices: deleteEmployeeChoices
+      }
+    ])
+    .then(function (answer) {
+
+      var query = `DELETE FROM employee WHERE ?`;
+      // when finished prompting, insert a new item into the db with that info
+      connection.query(query, { id: answer.employeeId }, function (err, res) {
+        if (err) throw err;
+
+        console.table(viewAllEmployees());
+
+        mainPrompt();
+      });
+    });
+}
+
+updateManager = () => {
+  const employeeSql = `SELECT * FROM employee`;
+
+  connection.query(employeeSql, (err, data) => {
+    if (err) throw err; 
+
+  const employees = data.map(({ id, first_name, last_name }) => ({ name: first_name + " "+ last_name, value: id }));
+
+    inquirer.prompt([
+      {
+        type: 'list',
+        name: 'name',
+        message: "Which employee would you like to update?",
+        choices: employees
+      }
+    ])
+      .then(empChoice => {
+        const employee = empChoice.name;
+        const params = []; 
+        params.push(employee);
+
+        const managerSql = `SELECT * FROM employee`;
+
+          connection.query(managerSql, (err, data) => {
+            if (err) throw err; 
+
+          const managers = data.map(({ id, first_name, last_name }) => ({ name: first_name + " "+ last_name, value: id }));
+            
+              inquirer.prompt([
+                {
+                  type: 'list',
+                  name: 'manager',
+                  message: "Who is the employee's manager?",
+                  choices: managers
+                }
+              ])
+                  .then(managerChoice => {
+                    const manager = managerChoice.manager;
+                    params.push(manager); 
+                    
+                    let employee = params[0]
+                    params[0] = manager
+                    params[1] = employee 
+                    
+
+                    const sql = `UPDATE employee SET manager_id = ? WHERE id = ?`;
+
+                    connection.query(sql, params, (err, result) => {
+                      if (err) throw err;
+                    console.log("Employee has been updated!");
+                  
+                    viewAllEmployees();
+          });
+        });
+      });
+    });
+  });
 };
