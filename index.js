@@ -297,3 +297,21 @@ const viewAllDepartments = () => {
     if (error) throw error;
     console.table(response);
     mainPrompt();})};
+
+const addDepartment = () => {
+  inquirer
+    .prompt([
+      {
+        name: 'newDepartment',
+        type: 'input',
+        message: 'What is the name of your new Department?',
+      }
+    ])
+    .then((answer) => {
+      let sql =     `INSERT INTO department (department.name) VALUES (?)`;
+      connection.query(sql, answer.newDepartment, (error, response) => {
+        if (error) throw error;
+        viewAllDepartments();
+      });
+    });
+};
