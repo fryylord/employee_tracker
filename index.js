@@ -92,6 +92,7 @@ const viewAllEmployees = () => {
                     employee.first_name, 
                     employee.last_name, 
                     role.title, 
+                    employee.manager_id,
                     department.name AS 'department', 
                     role.salary
                     FROM employee, role, department 
@@ -363,11 +364,11 @@ function promptDelete(deleteEmployeeChoices) {
       var query = `DELETE FROM employee WHERE ?`;
       // when finished prompting, insert a new item into the db with that info
       connection.query(query, { id: answer.employeeId }, function (err, res) {
-        if (err) throw err;
+        if (err) {console.log('Employee still assigned as manager');
+        mainPrompt()}
+        else {console.table(viewAllEmployees());
 
-        console.table(viewAllEmployees());
-
-        mainPrompt();
+        mainPrompt();}
       });
     });
 }
