@@ -19,8 +19,18 @@ const connection = mysql.createConnection({
 
 connection.connect(err => {
     if (err) throw err;
-    mainPrompt();
+    showHeader();
 });
+
+showHeader = () => {
+  console.log("___________________________________")
+  console.log("|                                 |")
+  console.log("|            EMPLOYEE             |")
+  console.log("|                                 |")
+  console.log("|            MANAGER              |")
+  console.log("|_________________________________|")
+  mainPrompt();
+};
 
 function mainPrompt() {
     inquirer
