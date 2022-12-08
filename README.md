@@ -3,8 +3,11 @@
 
 This script has been created as a command line based tool for maintaining a basic employee database.  The tables include Departments, Roles, and Employees.  
 
-![](./media/screenshot.jpg)
+![](./media/screenshot1.jpg)
 ![](./media/screenshot2.jpg)  
+![](./media/screenshot3.jpg)
+![](./media/screenshot4.jpg)  
+  
 [Click for demonstration video]()  
 [Link to GitHub Repo](https://github.com/fryylord/employee_tracker)  
 
