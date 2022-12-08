@@ -1,28 +1,32 @@
+//Dependencies
 require('dotenv').config();
 const mysql = require('mysql2');
 const inquirer = require('inquirer');
 const express = require('express');
 require('console.table');
-
-const PORT = process.env.PORT || 8001;
 const app = express();
 
+// Sets port for listening
+const PORT = process.env.PORT || 8001;
+
+//use functions for resource data
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
+//establish connection with database
 const connection = mysql.createConnection({
     host: 'localhost',
     user: 'root',
     password: process.env.KEY,
     database: 'employees'
 });
-
 connection.connect(err => {
     if (err) throw err;
-    showHeader();
+    showBanner();
 });
 
-showHeader = () => {
+//Title banner for app
+showBanner = () => {
   console.log("___________________________________")
   console.log("|                                 |")
   console.log("|            EMPLOYEE             |")
@@ -32,6 +36,7 @@ showHeader = () => {
   mainPrompt();
 };
 
+//Main function for app, displays options for actions to take
 function mainPrompt() {
     inquirer
         .prompt({
@@ -97,6 +102,7 @@ function mainPrompt() {
         });
 }
 
+//Function for displaying all current employees
 const viewAllEmployees = () => {
     let sql =       `SELECT employee.id, 
                     employee.first_name, 
@@ -114,6 +120,7 @@ const viewAllEmployees = () => {
       console.table(response);
       mainPrompt();})};
 
+//Function for adding a new employee
 const addEmployee = () => {
     inquirer.prompt([{
         type: 'input',
@@ -184,6 +191,7 @@ const addEmployee = () => {
         });
       };
 
+//Function for changing an employees role
 updateEmployeeRole = () => {
   const employeeSql = `SELECT * FROM employee`;
 
@@ -242,6 +250,7 @@ updateEmployeeRole = () => {
   });
 };
 
+//Function for displaying all existing roles
 const viewAllRoles = () => {
   let sql = `SELECT * FROM role`;
   connection.query(sql, (error, response) => {
@@ -249,6 +258,7 @@ const viewAllRoles = () => {
     console.table(response);
     mainPrompt();})};
 
+//Function for creating a new role
 addRole = () => {
   inquirer.prompt([
     {
@@ -312,13 +322,16 @@ addRole = () => {
  });
 };
 
+//Function for viewing all existing departments
 const viewAllDepartments = () => {
   let sql = `SELECT * FROM department`;
   connection.query(sql, (error, response) => {
     if (error) throw error;
     console.table(response);
-    mainPrompt();})};
+    mainPrompt();})
+};
 
+//Function for adding a new department
 const addDepartment = () => {
   inquirer
     .prompt([
@@ -337,6 +350,8 @@ const addDepartment = () => {
     });
 };
 
+//Part One of Employee Delete Function
+//Gathers potential employees to delete and displays them in a table
 function deleteEmployee() {
   console.log("Deleting an employee");
 
@@ -353,12 +368,13 @@ function deleteEmployee() {
 
     console.table(res);
 
-    promptDelete(deleteEmployeeChoices);
+    promptDeleteEmployee(deleteEmployeeChoices);
   });
 }
 
-// User choose the employee list, then employee is deleted
-function promptDelete(deleteEmployeeChoices) {
+//Part Two of Employee Delete Function
+//Takes results of part one, offers them a choice 
+function promptDeleteEmployee(deleteEmployeeChoices) {
 
   inquirer
     .prompt([
@@ -372,7 +388,6 @@ function promptDelete(deleteEmployeeChoices) {
     .then(function (answer) {
 
       var query = `DELETE FROM employee WHERE ?`;
-      // when finished prompting, insert a new item into the db with that info
       connection.query(query, { id: answer.employeeId }, function (err, res) {
         if (err) {console.log('Employee still assigned as manager');
         mainPrompt()}
@@ -383,6 +398,8 @@ function promptDelete(deleteEmployeeChoices) {
     });
 }
 
+//Function for changing the existing manager for a current employee
+//Necessary so that you can unassign an employee as a manager if you wish to delete that employee
 updateManager = () => {
   const employeeSql = `SELECT * FROM employee`;
 
