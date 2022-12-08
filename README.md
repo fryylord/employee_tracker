@@ -8,7 +8,7 @@ This script has been created as a command line based tool for maintaining a basi
 ![](./media/screenshot3.jpg)
 ![](./media/screenshot4.jpg)  
   
-[Click for demonstration video]()  
+[Click for demonstration video](https://fryylord.github.io/employee_tracker/media/employee_tracker.mp4)  
 [Link to GitHub Repo](https://github.com/fryylord/employee_tracker)  
 
 - [Installation](#installation)
